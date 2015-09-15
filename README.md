@@ -7,5 +7,5 @@ Thin Python client for CapIQ's API
 
 Create a settings.py file and specify your CapIQ username and password as follows:
 
-CAPIQ_USERNAME = username
-CAPIQ_PASSWORD = password
+    CAPIQ_USERNAME = {{username}}
+    CAPIQ_PASSWORD = {{password}}
