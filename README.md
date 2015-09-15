@@ -1,7 +1,14 @@
 # capiq-python
-Thin Python client for CapIQ's API
+Thin Python wrapper for CapIQ's REST API
 
-*Under development*
+##Status
+
+The wrapper is functional, but extremely thin. Would benefit from more functionality and documentation. 
+
+###TODO
+
+-Implement caching functionality
+-Write tests
 
 ##Getting Started
 
