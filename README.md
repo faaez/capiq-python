@@ -7,8 +7,8 @@ The wrapper is functional, but extremely thin. Would benefit from more functiona
 
 ###TODO
 
--Implement caching functionality
--Write tests
+- [ ] Implement caching functionality
+- [ ] Write tests
 
 ##Getting Started
 
