@@ -9,7 +9,7 @@ class CapIQClient:
     # This function retrieves a single data point for a point in time value for a mnemonic either current or
     # historical. Default inputs include a Mnemonic and a Security/Entity Identifier
     #
-    # Returns a nested dictionary, where the primary key is the identifier and the secondary key is the mnemonic. In case of an error, 
+    # Returns a nested dictionary, where the primary key is the identifier and the secondary key is the mnemonic. In case of an error,
     # a None value is returned for that mnemonic and Cap IQ's error is logged
     def gdsp(self,identifiers,mnemonics,properties=None):
         req_array = []
@@ -22,9 +22,9 @@ class CapIQClient:
         for r in response.json()['GDSSDKResponse']:
             identifier = r['Identifier']
             if identifier not in returnee:
-                returnee[identifier] = {} 
+                returnee[identifier] = {}
             for i,h in enumerate(r['Headers']):
-                if r['ErrMsg'] is not None:
+                if ret['ErrMsg']:
                     logging.error('Cap IQ error for '+identifier+' + '+h+' query: '+r['ErrMsg'])
                     returnee[identifier][h] = None
                 else:
@@ -65,7 +65,7 @@ class CapIQClient:
             for i in range(0,len(mnemonics)):
                 properties.append({})
         for p in properties:
-            if start_date:            
+            if start_date:
                 p["STARTDATE"] = start_date
             if end_date:
                 p["ENDDATE"] = end_date
@@ -84,7 +84,7 @@ class CapIQClient:
             for i in range(0,len(mnemonics)):
                 properties.append({})
         for p in properties:
-            if start_date:            
+            if start_date:
                 p["STARTDATE"] = start_date
             if end_date:
                 p["ENDDATE"] = end_date
