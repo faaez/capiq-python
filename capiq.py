@@ -29,7 +29,7 @@ class CapIQClient:
             if identifier not in returnee:
                 returnee[identifier] = {}
             for i,h in enumerate(r['Headers']):
-                if r['ErrMsg'] is not None:
+                if ret['ErrMsg']:
                     logging.error('Cap IQ error for '+identifier+' + '+h+' query: '+r['ErrMsg'])
                     returnee[identifier][h] = None
                 else:
