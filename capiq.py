@@ -1,15 +1,20 @@
 import requests,json,logging
 from requests.auth import HTTPBasicAuth
 from settings import CAPIQ_USERNAME, CAPIQ_PASSWORD
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 class CapIQClient:
     _endpoint = 'https://sdk.gds.standardandpoors.com/gdssdk/rest/v2/clientservice.json'
     _headers = {'Content-Type': 'application/x-www-form-urlencoded','Accept-Encoding': 'gzip,deflate'}
 
+    verify = True # Disable SSL Checks for requests. Set to False to avoid SSL blocking in secured networks
+    if verify == False:
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
     # This function retrieves a single data point for a point in time value for a mnemonic either current or
     # historical. Default inputs include a Mnemonic and a Security/Entity Identifier
     #
-    # Returns a nested dictionary, where the primary key is the identifier and the secondary key is the mnemonic. In case of an error, 
+    # Returns a nested dictionary, where the primary key is the identifier and the secondary key is the mnemonic. In case of an error,
     # a None value is returned for that mnemonic and Cap IQ's error is logged
     def gdsp(self,identifiers,mnemonics,properties=None):
         req_array = []
@@ -17,12 +22,12 @@ class CapIQClient:
             for i,mnemonic in enumerate(mnemonics):
                 req_array.append({"function":"GDSP","identifier":identifier,"mnemonic":mnemonic,"properties":properties[i] if properties else {}})
         req = {"inputRequests":req_array}
-        response = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD))
+        response = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         returnee = {}
         for r in response.json()['GDSSDKResponse']:
             identifier = r['Identifier']
             if identifier not in returnee:
-                returnee[identifier] = {} 
+                returnee[identifier] = {}
             for i,h in enumerate(r['Headers']):
                 if r['ErrMsg'] is not None:
                     logging.error('Cap IQ error for '+identifier+' + '+h+' query: '+r['ErrMsg'])
@@ -37,7 +42,7 @@ class CapIQClient:
             for i,mnemonic in enumerate(mnemonics):
                 req_array.append({"function":"GDSPV","identifier":identifier,"mnemonic":mnemonic,"properties":properties[i] if properties else {}})
         req = {"inputRequests":req_array}
-        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD))
+        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         return r.json()
 
     def gdst(self,identifiers,mnemonics,start_date,end_date=None,frequency='D',properties=None):
@@ -56,7 +61,7 @@ class CapIQClient:
             for i,mnemonic in enumerate(mnemonics):
                 req_array.append({"function":"GDST","identifier":identifier,"mnemonic":mnemonic,"properties":properties[i]})
         req = {"inputRequests":req_array}
-        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD))
+        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         return r.json()
 
     def gdshe(self,identifiers,mnemonics,start_date=None,end_date=None,properties=None):
@@ -65,7 +70,7 @@ class CapIQClient:
             for i in range(0,len(mnemonics)):
                 properties.append({})
         for p in properties:
-            if start_date:            
+            if start_date:
                 p["STARTDATE"] = start_date
             if end_date:
                 p["ENDDATE"] = end_date
@@ -75,7 +80,7 @@ class CapIQClient:
             for i,mnemonic in enumerate(mnemonics):
                 req_array.append({"function":"GDSHE","identifier":identifier,"mnemonic":mnemonic,"properties":properties[i]})
         req = {"inputRequests":req_array}
-        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD))
+        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         return r.json()
 
     def gdshv(self,identifiers,mnemonics,start_date=None,end_date=None,properties=None):
@@ -84,7 +89,7 @@ class CapIQClient:
             for i in range(0,len(mnemonics)):
                 properties.append({})
         for p in properties:
-            if start_date:            
+            if start_date:
                 p["STARTDATE"] = start_date
             if end_date:
                 p["ENDDATE"] = end_date
@@ -94,7 +99,7 @@ class CapIQClient:
             for i,mnemonic in enumerate(mnemonics):
                 req_array.append({"function":"GDSHV","identifier":identifier,"mnemonic":mnemonic,"properties":properties[i]})
         req = {"inputRequests":req_array}
-        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD))
+        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         return r.json()
 
     def gdsg(self,identifiers,group_mnemonics,properties=None):
@@ -103,11 +108,5 @@ class CapIQClient:
             for i,mnemonic in enumerate(group_mnemonics):
                 req_array.append({"function":"GDSG","identifier":identifier,"mnemonic":mnemonic,"properties":properties[i] if properties else {}})
         req = {"inputRequests":req_array}
-        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD))
+        r = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         return r.json()
-
-
-
-
-
-
