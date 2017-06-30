@@ -24,16 +24,16 @@ class CapIQClient:
         req = {"inputRequests":req_array}
         response = requests.post(self._endpoint,headers=self._headers,data='inputRequests='+json.dumps(req),auth=HTTPBasicAuth(CAPIQ_USERNAME,CAPIQ_PASSWORD),verify=self.verify)
         returnee = {}
-        for r in response.json()['GDSSDKResponse']:
-            identifier = r['Identifier']
+        for ret in response.json()['GDSSDKResponse']:
+            identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i,h in enumerate(r['Headers']):
+            for i,h in enumerate(ret['Headers']):
                 if ret['ErrMsg']:
-                    logging.error('Cap IQ error for '+identifier+' + '+h+' query: '+r['ErrMsg'])
+                    logging.error('Cap IQ error for '+identifier+' + '+h+' query: '+ret['ErrMsg'])
                     returnee[identifier][h] = None
                 else:
-                    returnee[identifier][h] = r['Rows'][i]['Row'][0]
+                    returnee[identifier][h] = ret['Rows'][i]['Row'][0]
         return returnee
 
     def gdspv(self,identifiers,mnemonics,properties=None):
