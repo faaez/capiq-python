@@ -1,7 +1,6 @@
 from mock import mock
 import unittest
-
-from libraries.capiq_python.capiq_client import CapIQClient
+from capiq_client import CapIQClient
 
 def mocked_gdsg_data_requests_post(*args, **kwargs):
     class MockResponse:
@@ -71,13 +70,13 @@ def mocked_gdsg_no_data_requests_post(*args, **kwargs):
 
 class TestCapiqClientGdsg(unittest.TestCase):
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdsg_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdsg_data_requests_post)
     def test_gdsg_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdsg(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdsg_no_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdsg_no_data_requests_post)
     def test_gdsg_no_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdsg(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])

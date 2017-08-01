@@ -1,14 +1,12 @@
 from mock import mock
 import unittest
-
-from libraries.capiq_python.capiq_client import CapIQClient
+from capiq_client import CapIQClient
 
 def mocked_gdst_data_requests_post(*args, **kwargs):
     class MockResponse:
         def __init__(self, json_data, status_code):
             self.json_data = json_data
             self.status_code = status_code
-
         def json(self):
             return self.json_data
     """
@@ -75,13 +73,13 @@ def mocked_gdst_no_data_requests_post(*args, **kwargs):
 
 class TestCapiqClientGdst(unittest.TestCase):
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdst_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdst_data_requests_post)
     def test_gdst_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdst(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdst_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdst_data_requests_post)
     def test_gdst_data_no_properties(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdst(
@@ -94,7 +92,7 @@ class TestCapiqClientGdst(unittest.TestCase):
         )
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdst_no_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdst_no_data_requests_post)
     def test_gdst_no_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdst(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])

@@ -1,7 +1,6 @@
 from mock import mock
 import unittest
-
-from libraries.capiq_python.capiq_client import CapIQClient
+from capiq_client import CapIQClient
 
 def mocked_gdshe_data_requests_post(*args, **kwargs):
     class MockResponse:
@@ -66,19 +65,19 @@ def mocked_gdshe_no_data_requests_post(*args, **kwargs):
 
 class TestCapiqClientGdshe(unittest.TestCase):
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
     def test_gdshe_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdshe(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdshe_no_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdshe_no_data_requests_post)
     def test_gdshe_no_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdshe(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': None}})
 
-    @mock.patch('libraries.capiq_python.capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
     def test_gdst_data_no_properties(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdshe(

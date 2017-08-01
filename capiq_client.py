@@ -3,7 +3,7 @@ import json
 import logging
 from requests.auth import HTTPBasicAuth
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from .settings import CAPIQ_USERNAME, CAPIQ_PASSWORD
+from settings import CAPIQ_USERNAME, CAPIQ_PASSWORD
 
 
 class CapIQClient:
