@@ -1,6 +1,9 @@
-from mock import mock
 import unittest
-from capiq_client.capiq_client import CapIQClient
+
+from mock import mock
+
+from capiq_client import CapIQClient
+
 
 def mocked_gdspv_data_requests_post(*args, **kwargs):
     class MockResponse:
@@ -60,13 +63,13 @@ def mocked_gdspv_no_data_requests_post(*args, **kwargs):
 
 class TestCapiqClientGdspv(unittest.TestCase):
 
-    @mock.patch('capiq_client.capiq_client.requests.post', side_effect=mocked_gdspv_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdspv_data_requests_post)
     def test_gdspv_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdspv(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
-    @mock.patch('capiq_client.capiq_client.requests.post', side_effect=mocked_gdspv_no_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdspv_no_data_requests_post)
     def test_gdspv_no_data(self, mocked_post):
         ciq_client = CapIQClient()
         return_value = ciq_client.gdspv(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])

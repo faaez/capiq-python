@@ -1,8 +1,11 @@
-from mock import mock
 import unittest
-from capiq_client.capiq_client import CapIQClient
 
-def mocked_gdshe_data_requests_post(*args, **kwargs):
+from mock import mock
+
+from capiq_client import CapIQClient
+
+
+def mocked_gdshv_data_requests_post(*args, **kwargs):
     class MockResponse:
         def __init__(self, json_data, status_code):
             self.json_data = json_data
@@ -17,7 +20,7 @@ def mocked_gdshe_data_requests_post(*args, **kwargs):
             "NumCols": 1,
             "Seniority": "",
             "Mnemonic": "IQ_CLOSEPRICE",
-            "Function": "GDSHE",
+            "Function": "GDSHV",
             "ErrMsg": None,
             "Properties": {},
             "StartDate": "",
@@ -29,7 +32,7 @@ def mocked_gdshe_data_requests_post(*args, **kwargs):
             "Limit": ""
         }]}, 200)
 
-def mocked_gdshe_no_data_requests_post(*args, **kwargs):
+def mocked_gdshv_no_data_requests_post(*args, **kwargs):
     class MockResponse:
         def __init__(self, json_data, status_code):
             self.json_data = json_data
@@ -49,7 +52,7 @@ def mocked_gdshe_no_data_requests_post(*args, **kwargs):
                             "NumCols": 1,
                             "Seniority": "",
                             "Mnemonic": "IQ_CLOSEPRICE",
-                            "Function": "GDSHE",
+                            "Function": "GDSHV",
                             "ErrMsg": "SOME ERROR",
                             "Properties": {},
                             "StartDate": "",
@@ -63,24 +66,24 @@ def mocked_gdshe_no_data_requests_post(*args, **kwargs):
                     ]
             }, 200)
 
-class TestCapiqClientGdshe(unittest.TestCase):
+class TestCapiqClientGdshv(unittest.TestCase):
 
-    @mock.patch('capiq_client.capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
-    def test_gdshe_data(self, mocked_post):
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdshv_data_requests_post)
+    def test_gdshv_data(self, mocked_post):
         ciq_client = CapIQClient()
-        return_value = ciq_client.gdshe(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
+        return_value = ciq_client.gdshv(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
-    @mock.patch('capiq_client.capiq_client.requests.post', side_effect=mocked_gdshe_no_data_requests_post)
-    def test_gdshe_no_data(self, mocked_post):
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdshv_no_data_requests_post)
+    def test_gdst_no_data(self, mocked_post):
         ciq_client = CapIQClient()
-        return_value = ciq_client.gdshe(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])
+        return_value = ciq_client.gdshv(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': None}})
 
-    @mock.patch('capiq_client.capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
+    @mock.patch('capiq_client.requests.post', side_effect=mocked_gdshv_data_requests_post)
     def test_gdst_data_no_properties(self, mocked_post):
         ciq_client = CapIQClient()
-        return_value = ciq_client.gdshe(
+        return_value = ciq_client.gdshv(
             ["TRIP"],
             ["IQ_CLOSEPRICE"],
             ["close_price"],

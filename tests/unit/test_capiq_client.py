@@ -1,6 +1,8 @@
-from mock import mock
 import unittest
-from capiq_client.capiq_client import CapIQClient
+
+from mock import mock
+
+from capiq_client import CapIQClient
 
 orig_import = __import__
 
