@@ -58,5 +58,5 @@ docs/_build/
 target/
 
 #settings
-settings.py
+capiq/settings.py
 .idea/*
