@@ -1,4 +1,4 @@
-from capiq_client import CapIQClient
+from libraries.capiq_python.capiq_client import CapIQClient
 
 metrics = {'comps': ['IQ_QUICK_COMP', {}], 'percent_of_shares_outstanding': ['IQ_SHORT_INTEREST_PERCENT', {}],
            'rolling_vol_30': ['IQ_VOLATILITY', {}], 'price': ['IQ_CLOSEPRICE', {}],
@@ -37,27 +37,20 @@ if __name__ == '__main__':
     #         for ii in range(0,len(i['Headers'])):
     #             print i['Headers'][ii],':',i['Rows'][ii]
 
+
     # print client.gdsg(['WMT:'],['BASIC_SECURITY_DESCRIPTION'])
 
     # print client.gdshe(['nyse:ibm'],['IQ_QUICK_COMP'],properties=[{'StartRank':1,'EndRank':5}])
     # print client.gdshv(['^ftse'],['IQ_CONSTITUENTS'],properties=[{'StartRank':1,'EndRank':5}])
-    metrics_map = {
-        'name': 'IQ_COMPANY_NAME',
-        'industry': 'IQ_INDUSTRY',
-        'sector': 'IQ_INDUSTRY_SECTOR',
-        'profile': 'IQ_BUSINESS_DESCRIPTION',
-        'company_url': 'IQ_COMPANY_WEBSITE'
-    }
+    metrics_map = {'name': 'IQ_COMPANY_NAME', 'industry': 'IQ_INDUSTRY', 'sector': 'IQ_INDUSTRY_SECTOR',
+                   'profile': 'IQ_BUSINESS_DESCRIPTION', 'company_url': 'IQ_COMPANY_WEBSITE'}
     query = []
-    return_keys = []
-    for k, m in metrics_map.items():
-        query.append(m)
-        return_keys.append(k)
+    for m in metrics_map:
+        query.append(metrics_map[m])
 
-    print(client.gdsp(['ibm:', 'aapl:'], query, return_keys, ""))
+    print(client.gdsp(['ibm:', 'aapl:'], query))
 
     # print client.gdsp(['ibm:'],['IQ_COMPANY_NAME'])
     # print client.gdsg(['ibm:nyse'],['BASIC_SECURITY_DESCRIPTION'])
 
-    # print(client.gdst(['IBM:'], ['TRACE_TRADE_30D_PRICE_VOLATILITY'], start_date="08/18/2015",
-    #                 properties={'frequency': "Daily", 'currencyId': "USD", 'currencyConversionModeId': "HISTORICAL"}))
+    # print client.gdst(['IBM:'],['TRACE_TRADE_30D_PRICE_VOLATILITY'],start_date="08/18/2015",properties={'frequency':"Daily",'CURRENCYID':"USD",'currencyConversionModeId':"HISTORICAL"})
