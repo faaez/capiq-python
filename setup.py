@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='capiq-python',
     version='',
-    packages=['tests', 'tests.unit'],
+    packages=['capiq_client', 'capiq_client.capiq_client.tests', 'capiq_client.capiq_client.tests.unit'],
     url='',
     license='',
     author='gmann',

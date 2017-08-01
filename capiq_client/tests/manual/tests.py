@@ -1,4 +1,4 @@
-from capiq_client import CapIQClient
+from capiq_client.capiq_client import CapIQClient
 
 metrics = {'comps': ['IQ_QUICK_COMP', {}], 'percent_of_shares_outstanding': ['IQ_SHORT_INTEREST_PERCENT', {}],
            'rolling_vol_30': ['IQ_VOLATILITY', {}], 'price': ['IQ_CLOSEPRICE', {}],
