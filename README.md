@@ -19,7 +19,7 @@ pip install git+git://github.com/guydmann/capiq-python.git --upgrade
 To initialize the wrapper import the client and initialize it with the username and password.  If you want to stop SSL verification also pass verify=False.  By default SSL certificates will be verified.
 ```python
 from capiq.capiq_client import CapIQClient
-ciq_client = CapIQClient(USERNAME, PASSWORD)
+ciq_client = CapIQClient("username", "password")
 ```
 
 To make calls to the capiq api 6 different functions which are documented in the Cap IQ documentation.  Each function takes a list of identifiers, mnemonics, return keys and properties.
