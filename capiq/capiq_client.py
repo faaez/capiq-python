@@ -11,17 +11,21 @@ class CapIQClient:
     _verify = True  # Disable SSL Checks for requests. Set to False to avoid SSL blocking in secured networks
     _username = None
     _password = None
+    _debug = False
 
-    def __init__(self, username, password, verify=True):
+    def __init__(self, username, password, verify=True, debug=False):
         assert username is not None
         assert password is not None
         assert verify is not None
+        assert debug is not None
         self._username = username
         self._password = password
         self._verify = verify
+        self._debug = debug
         if not self._verify:
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-        self.enable_request_debugging()
+        if self._debug:
+            self.enable_request_debugging()
 
     # This function retrieves a single data point for a point in time value for a mnemonic either current or
     # historical. Default inputs include a Mnemonic and a Security/Entity Identifier
