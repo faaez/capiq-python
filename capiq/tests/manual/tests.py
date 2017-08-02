@@ -54,7 +54,9 @@ if __name__ == '__main__':
         query.append(m)
         return_keys.append(k)
 
-    print(client.gdsp(['ibm:', 'aapl:'], query, return_keys, ""))
+    data = client.gdsp(['ibm:', 'aapl:'], query, return_keys, "")
+    #data = client.gdsp(['aapl:'], query, return_keys, "")
+    print(data)
 
     # print client.gdsp(['ibm:'],['IQ_COMPANY_NAME'])
     # print client.gdsg(['ibm:nyse'],['BASIC_SECURITY_DESCRIPTION'])

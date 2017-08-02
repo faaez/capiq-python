@@ -30,29 +30,33 @@ class CapIQClient:
     # In case of an error, a None value is returned for that mnemonic and Cap IQ's error is logged
     def gdsp(self, identifiers, mnemonics, return_keys, properties=None):
         req_array = []
+        returnee = {}
+        mnemonic_return_keys = {k: return_keys[v] for v, k in enumerate(mnemonics)}
+
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
                 req_array.append({"function": "GDSP", "identifier": identifier, "mnemonic": mnemonic,
                                   "properties": properties[i] if properties else {}})
         req = {"inputRequests": req_array}
-
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        returnee = {}
-        for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
+        for ret in response.json()['GDSSDKResponse']:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i, h in enumerate(ret['Headers']):
-                if ret['ErrMsg']:
-                    logging.error('Cap IQ error for ' + identifier + ' + ' + h + ' query: ' + ret['ErrMsg'])
-                    returnee[identifier][return_keys[return_index]] = None
-                else:
-                    returnee[identifier][return_keys[return_index]] = ret['Rows'][i]['Row'][0]
+            if ret['ErrMsg']:
+                logging.error(
+                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
+            else:
+                for i_m, h_m in enumerate(ret["Headers"]):
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     def gdspv(self, identifiers, mnemonics, return_keys, properties=None):
         req_array = []
+        returnee = {}
+        mnemonic_return_keys = {k: return_keys[v] for v, k in enumerate(mnemonics)}
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
                 req_array.append({"function": "GDSPV", "identifier": identifier, "mnemonic": mnemonic,
@@ -60,17 +64,18 @@ class CapIQClient:
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        returnee = {}
+
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i, h in enumerate(ret['Headers']):
-                if ret['ErrMsg']:
-                    logging.error('Cap IQ error for ' + identifier + ' + ' + h + ' query: ' + ret['ErrMsg'])
-                    returnee[identifier][return_keys[return_index]] = None
-                else:
-                    returnee[identifier][return_keys[return_index]] = ret['Rows'][i]['Row'][0]
+            if ret['ErrMsg']:
+                logging.error(
+                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
+            else:
+                for i_m, h_m in enumerate(ret["Headers"]):
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     def gdst(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, frequency=None,
@@ -89,6 +94,8 @@ class CapIQClient:
                 p["ENDDATE"] = end_date
 
         req_array = []
+        returnee = {}
+        mnemonic_return_keys = {k: return_keys[v] for v, k in enumerate(mnemonics)}
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
                 req_array.append(
@@ -96,18 +103,17 @@ class CapIQClient:
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        # return response.json()
-        returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i, h in enumerate(ret['Headers']):
-                if ret['ErrMsg']:
-                    logging.error('Cap IQ error for ' + identifier + ' + ' + h + ' query: ' + ret['ErrMsg'])
-                    returnee[identifier][return_keys[return_index]] = None
-                else:
-                    returnee[identifier][return_keys[return_index]] = ret['Rows'][i]['Row'][0]
+            if ret['ErrMsg']:
+                logging.error(
+                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
+            else:
+                for i_m, h_m in enumerate(ret["Headers"]):
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     def gdshe(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, properties=None):
@@ -122,6 +128,8 @@ class CapIQClient:
                 p["ENDDATE"] = end_date
 
         req_array = []
+        returnee = {}
+        mnemonic_return_keys = {k: return_keys[v] for v, k in enumerate(mnemonics)}
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
                 req_array.append(
@@ -129,17 +137,17 @@ class CapIQClient:
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i, h in enumerate(ret['Headers']):
-                if ret['ErrMsg']:
-                    logging.error('Cap IQ error for ' + identifier + ' + ' + h + ' query: ' + ret['ErrMsg'])
-                    returnee[identifier][return_keys[return_index]] = None
-                else:
-                    returnee[identifier][return_keys[return_index]] = ret['Rows'][i]['Row'][0]
+            if ret['ErrMsg']:
+                logging.error(
+                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
+            else:
+                for i_m, h_m in enumerate(ret["Headers"]):
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     def gdshv(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, properties=None):
@@ -154,6 +162,8 @@ class CapIQClient:
                 p["ENDDATE"] = end_date
 
         req_array = []
+        returnee = {}
+        mnemonic_return_keys = {k: return_keys[v] for v, k in enumerate(mnemonics)}
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
                 req_array.append(
@@ -161,21 +171,23 @@ class CapIQClient:
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i, h in enumerate(ret['Headers']):
-                if ret['ErrMsg']:
-                    logging.error('Cap IQ error for ' + identifier + ' + ' + h + ' query: ' + ret['ErrMsg'])
-                    returnee[identifier][return_keys[return_index]] = None
-                else:
-                    returnee[identifier][return_keys[return_index]] = ret['Rows'][i]['Row'][0]
+            if ret['ErrMsg']:
+                logging.error(
+                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
+            else:
+                for i_m, h_m in enumerate(ret["Headers"]):
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     def gdsg(self, identifiers, group_mnemonics, return_keys, properties=None):
         req_array = []
+        returnee = {}
+        mnemonic_return_keys = {k: return_keys[v] for v, k in enumerate(group_mnemonics)}
         for identifier in identifiers:
             for i, mnemonic in enumerate(group_mnemonics):
                 req_array.append({"function": "GDSG", "identifier": identifier, "mnemonic": mnemonic,
@@ -183,17 +195,17 @@ class CapIQClient:
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
-            for i, h in enumerate(ret['Headers']):
-                if ret['ErrMsg']:
-                    logging.error('Cap IQ error for ' + identifier + ' + ' + h + ' query: ' + ret['ErrMsg'])
-                    returnee[identifier][return_keys[return_index]] = None
-                else:
-                    returnee[identifier][return_keys[return_index]] = ret['Rows'][i]['Row'][0]
+            if ret['ErrMsg']:
+                logging.error(
+                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
+            else:
+                for i_m, h_m in enumerate(ret["Headers"]):
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     @staticmethod
