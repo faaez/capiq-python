@@ -26,6 +26,8 @@ class CapIQClient:
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
         if self._debug:
             self.enable_request_debugging()
+        else:
+            self.enable_error_logging()
 
     # This function retrieves a single data point for a point in time value for a mnemonic either current or
     # historical. Default inputs include a Mnemonic and a Security/Entity Identifier
@@ -229,3 +231,8 @@ class CapIQClient:
         requests_log = logging.getLogger("requests.packages.urllib3")
         requests_log.setLevel(logging.DEBUG)
         requests_log.propagate = True
+
+    @staticmethod
+    def enable_error_logging():
+        logging.basicConfig()  # you need to initialize logging, otherwise you will not see anything from requests
+        logging.getLogger().setLevel(logging.ERROR)
