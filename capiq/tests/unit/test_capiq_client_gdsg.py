@@ -75,12 +75,12 @@ class TestCapiqClientGdsg(unittest.TestCase):
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdsg_data_requests_post)
     def test_gdsg_data(self, mocked_post):
-        ciq_client = CapIQClient()
+        ciq_client = CapIQClient("username", "password")
         return_value = ciq_client.gdsg(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdsg_no_data_requests_post)
     def test_gdsg_no_data(self, mocked_post):
-        ciq_client = CapIQClient()
+        ciq_client = CapIQClient("username", "password")
         return_value = ciq_client.gdsg(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': None}})

@@ -3,15 +3,21 @@ import json
 import logging
 from requests.auth import HTTPBasicAuth
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from .settings import CAPIQ_USERNAME, CAPIQ_PASSWORD
 
 
 class CapIQClient:
     _endpoint = 'https://sdk.gds.standardandpoors.com/gdssdk/rest/v2/clientservice.json'
     _headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept-Encoding': 'gzip,deflate'}
     verify = True  # Disable SSL Checks for requests. Set to False to avoid SSL blocking in secured networks
+    username = None
+    password = None
 
-    def __init__(self, verify=True):
+    def __init__(self, username, password, verify=True):
+        assert username is not None
+        assert password is not None
+        assert verify is not None
+        self.username = username
+        self.password = password
         self.verify = verify
         if not self.verify:
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -31,7 +37,7 @@ class CapIQClient:
         req = {"inputRequests": req_array}
 
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(CAPIQ_USERNAME, CAPIQ_PASSWORD), verify=self.verify)
+                                 auth=HTTPBasicAuth(self.username, self.password), verify=self.verify)
         returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
@@ -53,7 +59,7 @@ class CapIQClient:
                                   "properties": properties[i] if properties else {}})
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(CAPIQ_USERNAME, CAPIQ_PASSWORD), verify=self.verify)
+                                 auth=HTTPBasicAuth(self.username, self.password), verify=self.verify)
         returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
@@ -89,7 +95,7 @@ class CapIQClient:
                     {"function": "GDST", "identifier": identifier, "mnemonic": mnemonic, "properties": properties[i]})
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(CAPIQ_USERNAME, CAPIQ_PASSWORD), verify=self.verify)
+                                 auth=HTTPBasicAuth(self.username, self.password), verify=self.verify)
         # return response.json()
         returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
@@ -122,7 +128,7 @@ class CapIQClient:
                     {"function": "GDSHE", "identifier": identifier, "mnemonic": mnemonic, "properties": properties[i]})
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(CAPIQ_USERNAME, CAPIQ_PASSWORD), verify=self.verify)
+                                 auth=HTTPBasicAuth(self.username, self.password), verify=self.verify)
         returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
@@ -154,7 +160,7 @@ class CapIQClient:
                     {"function": "GDSHV", "identifier": identifier, "mnemonic": mnemonic, "properties": properties[i]})
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(CAPIQ_USERNAME, CAPIQ_PASSWORD), verify=self.verify)
+                                 auth=HTTPBasicAuth(self.username, self.password), verify=self.verify)
         returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
@@ -176,7 +182,7 @@ class CapIQClient:
                                   "properties": properties[i] if properties else {}})
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(CAPIQ_USERNAME, CAPIQ_PASSWORD), verify=self.verify)
+                                 auth=HTTPBasicAuth(self.username, self.password), verify=self.verify)
         returnee = {}
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']

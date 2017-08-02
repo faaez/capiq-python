@@ -21,7 +21,7 @@ metrics = {'comps': ['IQ_QUICK_COMP', {}], 'percent_of_shares_outstanding': ['IQ
            'volume': ['IQ_VOLUME', {}]}
 
 if __name__ == '__main__':
-    client = CapIQClient()
+    client = CapIQClient("username", "password")
     # print client.gdshe(['WMT:'],['IQ_CLOSEPRICE'],start_date='11/12/2010',end_date='11/18/2010')
     # mnemonics = []
     # properties = []

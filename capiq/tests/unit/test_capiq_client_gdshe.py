@@ -70,19 +70,19 @@ class TestCapiqClientGdshe(unittest.TestCase):
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
     def test_gdshe_data(self, mocked_post):
-        ciq_client = CapIQClient()
+        ciq_client = CapIQClient("username", "password")
         return_value = ciq_client.gdshe(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdshe_no_data_requests_post)
     def test_gdshe_no_data(self, mocked_post):
-        ciq_client = CapIQClient()
+        ciq_client = CapIQClient("username", "password")
         return_value = ciq_client.gdshe(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], [{}])
         self.assertEqual(return_value, {'TRIP:': {'close_price': None}})
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdshe_data_requests_post)
     def test_gdst_data_no_properties(self, mocked_post):
-        ciq_client = CapIQClient()
+        ciq_client = CapIQClient("username", "password")
         return_value = ciq_client.gdshe(
             ["TRIP"],
             ["IQ_CLOSEPRICE"],
