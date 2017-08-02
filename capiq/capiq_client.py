@@ -109,6 +109,8 @@ class CapIQClient:
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
+        if self._debug:
+            logging.info("Cap IQ response", extra={"response": response})
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
