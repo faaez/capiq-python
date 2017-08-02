@@ -146,8 +146,9 @@ class CapIQClient:
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
                 returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = None
             else:
-                for i_m, h_m in enumerate(ret["Headers"]):
-                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = ret['Rows'][i_m]['Row'][0]
+                returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]] = []
+                for row in ret["Rows"]:
+                    returnee[identifier][mnemonic_return_keys[ret['Mnemonic']]].append(row['Row'])
         return returnee
 
     def gdshv(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, properties=None):

@@ -21,8 +21,9 @@ metrics = {'comps': ['IQ_QUICK_COMP', {}], 'percent_of_shares_outstanding': ['IQ
            'volume': ['IQ_VOLUME', {}]}
 
 if __name__ == '__main__':
+
     client = CapIQClient("username", "password")
-    # print client.gdshe(['WMT:'],['IQ_CLOSEPRICE'],start_date='11/12/2010',end_date='11/18/2010')
+    #print(client.gdshe(['WMT:', "ibm:"],['IQ_CLOSEPRICE'], ['close_price'], start_date='11/12/2010',end_date='11/18/2010'))
     # mnemonics = []
     # properties = []
     # for m in metrics:
@@ -37,10 +38,10 @@ if __name__ == '__main__':
     #         for ii in range(0,len(i['Headers'])):
     #             print i['Headers'][ii],':',i['Rows'][ii]
 
-    # print client.gdsg(['WMT:'],['BASIC_SECURITY_DESCRIPTION'])
+    #print(client.gdsg(['WMT:'],['BASIC_SECURITY_DESCRIPTION'], ["description"]))
 
     # print client.gdshe(['nyse:ibm'],['IQ_QUICK_COMP'],properties=[{'StartRank':1,'EndRank':5}])
-    # print client.gdshv(['^ftse'],['IQ_CONSTITUENTS'],properties=[{'StartRank':1,'EndRank':5}])
+    #print(client.gdshv(['^ftse'],['IQ_CONSTITUENTS'],["constituents"], properties=[{'StartRank':1,'EndRank':5}]))
     metrics_map = {
         'name': 'IQ_COMPANY_NAME',
         'industry': 'IQ_INDUSTRY',
@@ -54,12 +55,12 @@ if __name__ == '__main__':
         query.append(m)
         return_keys.append(k)
 
-    data = client.gdsp(['ibm:', 'aapl:'], query, return_keys, "")
+    #data = client.gdsp(['ibm:', 'aapl:'], query, return_keys, "")
     #data = client.gdsp(['aapl:'], query, return_keys, "")
-    print(data)
+    #print(data)
 
     # print client.gdsp(['ibm:'],['IQ_COMPANY_NAME'])
     # print client.gdsg(['ibm:nyse'],['BASIC_SECURITY_DESCRIPTION'])
 
-    # print(client.gdst(['IBM:'], ['TRACE_TRADE_30D_PRICE_VOLATILITY'], start_date="08/18/2015",
-    #                 properties={'frequency': "Daily", 'currencyId': "USD", 'currencyConversionModeId': "HISTORICAL"}))
+    print(client.gdst(['IBM:'], ['TRACE_TRADE_30D_PRICE_VOLATILITY'], ["trace_volitility"], start_date="08/18/2015",
+                     properties=[{'frequency': "Daily", 'currencyId': "USD", 'currencyConversionModeId': "HISTORICAL"}]))
