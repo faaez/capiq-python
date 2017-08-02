@@ -13,7 +13,7 @@ All function should be tested to confirm they work as expected.
 
 Install the package using pip. 
 ```bash
-pip install git+git://github.com/guydmann/capiq-python.git --upgrade
+pip install git+git://github.com/guydmann/capiq-python.git
 ```
 
 To initialize the wrapper import the client and initialize it with the username and password.  If you want to stop SSL verification also pass verify=False.  By default SSL certificates will be verified.
