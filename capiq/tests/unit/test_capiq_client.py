@@ -10,11 +10,11 @@ class TestCapiqClient(unittest.TestCase):
 
     def test_verify_true(self):
         ciq_client = CapIQClient("username", "password", verify=True)
-        self.assertEqual(ciq_client.verify, True)
+        self.assertEqual(ciq_client._verify, True)
 
     def test_verify_false(self):
         ciq_client = CapIQClient("username", "password", verify=False)
-        self.assertEqual(ciq_client.verify, False)
+        self.assertEqual(ciq_client._verify, False)
 
     def test_python_2_exception(self):
         def import_mock(name, *args):
