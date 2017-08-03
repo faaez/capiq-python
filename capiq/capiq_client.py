@@ -53,14 +53,18 @@ class CapIQClient:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
+            returned_properties = {}
+            if "Properties" in ret:
+                returned_properties = ret['Properties']
             if ret['ErrMsg']:
                 logging.error(
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = None
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
                 for i_m, h_m in enumerate(ret["Headers"]):
+
                     returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)
+                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
                     ] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
@@ -82,14 +86,17 @@ class CapIQClient:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
+            returned_properties = {}
+            if "Properties" in ret:
+                returned_properties = ret['Properties']
             if ret['ErrMsg']:
                 logging.error(
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = None
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
                 for i_m, h_m in enumerate(ret["Headers"]):
                     returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)
+                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
                     ] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
@@ -125,15 +132,18 @@ class CapIQClient:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
+            returned_properties = {}
+            if "Properties" in ret:
+                returned_properties = ret['Properties']
             if ret['ErrMsg']:
                 logging.error(
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = None
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = []
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = []
                 for row in ret["Rows"]:
                     returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)
+                        self.get_return_key(ret['Mnemonic'], ret['Properties'], mnemonic_return_keys)
                     ].append(row['Row'])
         return returnee
 
@@ -165,15 +175,18 @@ class CapIQClient:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
+            returned_properties = {}
+            if "Properties" in ret:
+                returned_properties = ret['Properties']
             if ret['ErrMsg']:
                 logging.error(
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = None
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = []
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = []
                 for row in ret["Rows"]:
                     returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)
+                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
                     ].append(row['Row'])
         return returnee
 
@@ -206,14 +219,17 @@ class CapIQClient:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
+            returned_properties = {}
+            if "Properties" in ret:
+                returned_properties = ret['Properties']
             if ret['ErrMsg']:
                 logging.error(
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)] = None
+                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
                 for i_m, h_m in enumerate(ret["Headers"]):
                     returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)
+                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
                     ] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
@@ -236,14 +252,18 @@ class CapIQClient:
             identifier = ret['Identifier']
             if identifier not in returnee:
                 returnee[identifier] = {}
+            returned_properties = {}
+            if "Properties" in ret:
+                returned_properties = ret['Properties']
             if ret['ErrMsg']:
                 logging.error(
                     'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], ret['Properties'], mnemonic_return_keys)] = None
+                returnee[identifier][
+                    self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
                 for i_m, h_m in enumerate(ret["Headers"]):
                     returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], properties, mnemonic_return_keys)
+                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
                     ] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
@@ -265,16 +285,23 @@ class CapIQClient:
 
     @staticmethod
     def get_return_key(mnemonic, properties, mnemonics_to_return_key_index):
+        logging.info("mnemonics_to_return_key_index")
+        logging.info(mnemonics_to_return_key_index)
         if len(mnemonics_to_return_key_index[mnemonic]) == 1:
             return mnemonics_to_return_key_index[mnemonic][0]["key"]
         else:
             for index, return_key in enumerate(mnemonics_to_return_key_index[mnemonic]):
                 match = True
-                for property_name, property_value in return_key["properties"].items():
-                    if not (return_key.lower() in properties and properties[property_name.lower()] == property_value):
+                logging.info(properties)
+                for property_name, property_value in properties.items():
+                    if not (property_name.upper() in return_key["properties"] and \
+                                        return_key["properties"][property_name.upper()] == property_value):
+                        logging.info(properties)
+                        logging.info(property_name)
+                        logging.info(property_value)
                         match = False
                 if match:
-                    return mnemonics_to_return_key_index[mnemonic][index]["key"]
+                    return return_key["key"]
 
     @staticmethod
     def enable_request_debugging():
