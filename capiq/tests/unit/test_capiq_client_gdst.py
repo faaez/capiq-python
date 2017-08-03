@@ -80,7 +80,7 @@ class TestCapiqClientGdst(unittest.TestCase):
     def test_gdst_data(self, mocked_post):
         ciq_client = CapIQClient("username", "password")
         return_value = ciq_client.gdst(["TRIP"], ["IQ_CLOSEPRICE"], ["close_price"], properties=[{}])
-        self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
+        self.assertEqual(return_value, {'TRIP:': {'close_price': [['46.80']]}})
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdst_data_requests_post)
     def test_gdst_data_no_properties(self, mocked_post):
@@ -93,7 +93,7 @@ class TestCapiqClientGdst(unittest.TestCase):
             end_date="12/19/2000",
             frequency="M"
         )
-        self.assertEqual(return_value, {'TRIP:': {'close_price': '46.80'}})
+        self.assertEqual(return_value, {'TRIP:': {'close_price': [['46.80']]}})
 
     @mock.patch('capiq.capiq_client.requests.post', side_effect=mocked_gdst_no_data_requests_post)
     def test_gdst_no_data(self, mocked_post):
