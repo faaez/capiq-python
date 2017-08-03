@@ -268,13 +268,13 @@ class CapIQClient:
         if len(mnemonics_to_return_key_index[mnemonic]) == 1:
             return mnemonics_to_return_key_index[mnemonic][0]["key"]
         else:
-            print(mnemonics_to_return_key_index[mnemonic])
             for index, return_key in enumerate(mnemonics_to_return_key_index[mnemonic]):
                 match = True
-                for property_name, property_value in return_key["properties"].items:
+                for property_name, property_value in return_key["properties"].items():
                     if not (return_key.lower() in properties and properties[property_name.lower()] == property_value):
                         match = False
-                return mnemonics_to_return_key_index[mnemonic][index]["key"]
+                if match:
+                    return mnemonics_to_return_key_index[mnemonic][index]["key"]
 
     @staticmethod
     def enable_request_debugging():
