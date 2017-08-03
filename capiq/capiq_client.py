@@ -35,70 +35,10 @@ class CapIQClient:
     # Returns a nested dictionary, where the primary key is the identifier and the secondary key is the mnemonic.
     # In case of an error, a None value is returned for that mnemonic and Cap IQ's error is logged
     def gdsp(self, identifiers, mnemonics, return_keys, properties=None):
-        req_array = []
-        returnee = {}
-        mnemonic_return_keys = self.build_mnemonic_return_key_index(mnemonics, return_keys, properties)
-
-        for identifier in identifiers:
-            for i, mnemonic in enumerate(mnemonics):
-                req_array.append({"function": "GDSP", "identifier": identifier, "mnemonic": mnemonic,
-                                  "properties": properties[i] if properties else {}})
-        req = {"inputRequests": req_array}
-        response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        if self._debug:
-            logging.info("Cap IQ response")
-            logging.info(response.json())
-        for ret in response.json()['GDSSDKResponse']:
-            identifier = ret['Identifier']
-            if identifier not in returnee:
-                returnee[identifier] = {}
-            returned_properties = {}
-            if "Properties" in ret:
-                returned_properties = ret['Properties']
-            if ret['ErrMsg']:
-                logging.error(
-                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
-            else:
-                for i_m, h_m in enumerate(ret["Headers"]):
-
-                    returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
-                    ] = ret['Rows'][i_m]['Row'][0]
-        return returnee
+        return self.make_request(identifiers, mnemonics, return_keys, properties, "GDSP", False)
 
     def gdspv(self, identifiers, mnemonics, return_keys, properties=None):
-        req_array = []
-        returnee = {}
-        mnemonic_return_keys = self.build_mnemonic_return_key_index(mnemonics, return_keys, properties)
-        for identifier in identifiers:
-            for i, mnemonic in enumerate(mnemonics):
-                req_array.append({"function": "GDSPV", "identifier": identifier, "mnemonic": mnemonic,
-                                  "properties": properties[i] if properties else {}})
-        req = {"inputRequests": req_array}
-        response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        if self._debug:
-            logging.info("Cap IQ response")
-            logging.info(response.json())
-        for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
-            identifier = ret['Identifier']
-            if identifier not in returnee:
-                returnee[identifier] = {}
-            returned_properties = {}
-            if "Properties" in ret:
-                returned_properties = ret['Properties']
-            if ret['ErrMsg']:
-                logging.error(
-                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
-            else:
-                for i_m, h_m in enumerate(ret["Headers"]):
-                    returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
-                    ] = ret['Rows'][i_m]['Row'][0]
-        return returnee
+        return self.make_request(identifiers, mnemonics, return_keys, properties, "GDSPV", False)
 
     def gdst(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, frequency=None,
              properties=None):
@@ -114,38 +54,7 @@ class CapIQClient:
                 p["STARTDATE"] = start_date
             if end_date:
                 p["ENDDATE"] = end_date
-
-        req_array = []
-        returnee = {}
-        mnemonic_return_keys = self.build_mnemonic_return_key_index(mnemonics, return_keys, properties)
-        for identifier in identifiers:
-            for i, mnemonic in enumerate(mnemonics):
-                req_array.append(
-                    {"function": "GDST", "identifier": identifier, "mnemonic": mnemonic, "properties": properties[i]})
-        req = {"inputRequests": req_array}
-        response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        if self._debug:
-            logging.info("Cap IQ response")
-            logging.info(response.json())
-        for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
-            identifier = ret['Identifier']
-            if identifier not in returnee:
-                returnee[identifier] = {}
-            returned_properties = {}
-            if "Properties" in ret:
-                returned_properties = ret['Properties']
-            if ret['ErrMsg']:
-                logging.error(
-                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
-            else:
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = []
-                for row in ret["Rows"]:
-                    returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], ret['Properties'], mnemonic_return_keys)
-                    ].append(row['Row'])
-        return returnee
+        return self.make_request(identifiers, mnemonics, return_keys, properties, "GDST", True)
 
     def gdshe(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, properties=None):
         if not properties:
@@ -158,37 +67,7 @@ class CapIQClient:
             if end_date:
                 p["ENDDATE"] = end_date
 
-        req_array = []
-        returnee = {}
-        mnemonic_return_keys = self.build_mnemonic_return_key_index(mnemonics, return_keys, properties)
-        for identifier in identifiers:
-            for i, mnemonic in enumerate(mnemonics):
-                req_array.append(
-                    {"function": "GDSHE", "identifier": identifier, "mnemonic": mnemonic, "properties": properties[i]})
-        req = {"inputRequests": req_array}
-        response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        if self._debug:
-            logging.info("Cap IQ response")
-            logging.info(response.json())
-        for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
-            identifier = ret['Identifier']
-            if identifier not in returnee:
-                returnee[identifier] = {}
-            returned_properties = {}
-            if "Properties" in ret:
-                returned_properties = ret['Properties']
-            if ret['ErrMsg']:
-                logging.error(
-                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
-            else:
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = []
-                for row in ret["Rows"]:
-                    returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
-                    ].append(row['Row'])
-        return returnee
+        return self.make_request(identifiers, mnemonics, return_keys, properties, "GDSHE", True)
 
     def gdshv(self, identifiers, mnemonics, return_keys, start_date=None, end_date=None, properties=None):
         if not properties:
@@ -200,47 +79,20 @@ class CapIQClient:
                 p["STARTDATE"] = start_date
             if end_date:
                 p["ENDDATE"] = end_date
+        return self.make_request(identifiers, mnemonics, return_keys, properties, "GDSHV", False)
 
+    def gdsg(self, identifiers, group_mnemonics, return_keys, properties=None):
+        return self.make_request(identifiers, group_mnemonics, return_keys, properties, "GDSG", False)
+
+
+    def make_request(self, identifiers, mnemonics, return_keys, properties, api_function_identifier, multiple_results_expected):
         req_array = []
         returnee = {}
         mnemonic_return_keys = self.build_mnemonic_return_key_index(mnemonics, return_keys, properties)
 
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
-                req_array.append(
-                    {"function": "GDSHV", "identifier": identifier, "mnemonic": mnemonic, "properties": properties[i]})
-        req = {"inputRequests": req_array}
-        response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
-                                 auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
-        if self._debug:
-            logging.info("Cap IQ response")
-            logging.info(response.json())
-        for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
-            identifier = ret['Identifier']
-            if identifier not in returnee:
-                returnee[identifier] = {}
-            returned_properties = {}
-            if "Properties" in ret:
-                returned_properties = ret['Properties']
-            if ret['ErrMsg']:
-                logging.error(
-                    'Cap IQ error for ' + identifier + ' + ' + ret['Mnemonic'] + ' query: ' + ret['ErrMsg'])
-                returnee[identifier][self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
-            else:
-                for i_m, h_m in enumerate(ret["Headers"]):
-                    returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
-                    ] = ret['Rows'][i_m]['Row'][0]
-        return returnee
-
-    def gdsg(self, identifiers, group_mnemonics, return_keys, properties=None):
-        req_array = []
-        returnee = {}
-        mnemonic_return_keys = self.build_mnemonic_return_key_index(group_mnemonics, return_keys, properties)
-
-        for identifier in identifiers:
-            for i, mnemonic in enumerate(group_mnemonics):
-                req_array.append({"function": "GDSG", "identifier": identifier, "mnemonic": mnemonic,
+                req_array.append({"function": api_function_identifier, "identifier": identifier, "mnemonic": mnemonic,
                                   "properties": properties[i] if properties else {}})
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
@@ -262,9 +114,17 @@ class CapIQClient:
                     self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = None
             else:
                 for i_m, h_m in enumerate(ret["Headers"]):
-                    returnee[identifier][
-                        self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
-                    ] = ret['Rows'][i_m]['Row'][0]
+                    if multiple_results_expected:
+                        returnee[identifier][
+                            self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)] = []
+                        for row in ret["Rows"]:
+                            returnee[identifier][
+                                self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
+                            ].append(row['Row'])
+                    else:
+                        returnee[identifier][
+                            self.get_return_key(ret['Mnemonic'], returned_properties, mnemonic_return_keys)
+                        ] = ret['Rows'][i_m]['Row'][0]
         return returnee
 
     @staticmethod
@@ -296,9 +156,6 @@ class CapIQClient:
                 for property_name, property_value in properties.items():
                     if not (property_name.upper() in return_key["properties"] and \
                                         return_key["properties"][property_name.upper()] == property_value):
-                        logging.info(properties)
-                        logging.info(property_name)
-                        logging.info(property_value)
                         match = False
                 if match:
                     return return_key["key"]
