@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import requests_cache
 from requests.auth import HTTPBasicAuth
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -28,6 +29,8 @@ class CapIQClient:
             self.enable_request_debugging()
         else:
             self.enable_error_logging()
+        # cache requests for 24 hours
+        requests_cache.install_cache('capiq_cache', backend='sqlite', expire_after=86400, allowable_methods=('POST',))
 
     # This function retrieves a single data point for a point in time value for a mnemonic either current or
     # historical. Default inputs include a Mnemonic and a Security/Entity Identifier
@@ -100,6 +103,7 @@ class CapIQClient:
         if self._debug:
             logging.info("Cap IQ response")
             logging.info(response.json())
+            logging.info("reponse from cache: {}".format(response.from_cache))
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:

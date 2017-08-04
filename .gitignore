@@ -62,3 +62,6 @@ capiq/tests/manual/settings.py
 
 # IDE
 .idea/*
+
+# cache files
+*.sqlite
