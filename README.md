@@ -3,11 +3,11 @@ Thin Python wrapper for CapIQ's REST API
 
 ##Status
 
-The wrapper is functional, but extremely thin. Would benefit from more functionality and documentation. 
+The wrapper is functional.  It includes request caching, with a keep alive of 24 hours.  Credentials are passed in to the constructor for ease of use.  
 
 ###TODO
 
-All function should be tested to confirm they work as expected.
+I haven't tested all the request types in in the real world.
 
 ##Getting Started
 
