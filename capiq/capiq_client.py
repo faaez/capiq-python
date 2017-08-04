@@ -5,6 +5,8 @@ import requests_cache
 from requests.auth import HTTPBasicAuth
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+class CiqServiceException(Exception):
+    pass
 
 class CapIQClient:
     _endpoint = 'https://sdk.gds.standardandpoors.com/gdssdk/rest/v2/clientservice.json'
@@ -104,6 +106,14 @@ class CapIQClient:
             logging.info("Cap IQ response")
             logging.info(response.json())
             logging.info("reponse from cache: {}".format(response.from_cache))
+
+        if len(response.json()['GDSSDKResponse']) == 1 and \
+                        len(response.json()['GDSSDKResponse'][0]) == 1 and \
+                        "ErrMsg" in response.json()['GDSSDKResponse'][0].keys():
+            # for catching service level issues such as request limit
+            # this is an example of what we can catch:
+            # {'GDSSDKResponse': [{'ErrMsg': 'Daily Request Limit of 10000 Exceeded'}]}
+            raise CiqServiceException(response.json()['GDSSDKResponse'][0]["ErrMsg"])
         for return_index, ret in enumerate(response.json()['GDSSDKResponse']):
             identifier = ret['Identifier']
             if identifier not in returnee:
@@ -133,11 +143,6 @@ class CapIQClient:
 
     @staticmethod
     def build_mnemonic_return_key_index(mnemonics, return_keys, properties):
-        """
-                mnemonic_return_keys = {
-            k: {"key": return_keys[v], "properties": properties[v]} for v, k in enumerate(mnemonics)
-        }
-        """
         mnemonic_return_keys = {}
         for index, mnemonic in enumerate(mnemonics):
             if mnemonic in mnemonic_return_keys:
