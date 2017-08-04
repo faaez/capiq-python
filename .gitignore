@@ -36,12 +36,13 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
-.coverage
 .coverage.*
+.coverage
 .cache
 nosetests.xml
 coverage.xml
 *,cover
+cover/
 
 # Translations
 *.mo
@@ -56,5 +57,11 @@ docs/_build/
 # PyBuilder
 target/
 
-#settings
-settings.py
+# settings
+capiq/tests/manual/settings.py
+
+# IDE
+.idea/*
+
+# cache files
+*.sqlite
