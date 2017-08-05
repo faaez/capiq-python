@@ -13,7 +13,7 @@ I haven't tested all the request types in in the real world.
 
 Install the package using pip. 
 ```bash
-pip install git+git://github.com/guydmann/capiq-python.git
+pip install git+git://github.com/faaez/capiq-python.git
 ```
 
 To initialize the wrapper import the client and initialize it with the username and password.  If you want to stop SSL verification also pass verify=False.  By default SSL certificates will be verified.
