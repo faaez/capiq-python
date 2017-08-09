@@ -2,3 +2,5 @@ requests
 json
 mock
 requests-cache
+nose
+unittest
