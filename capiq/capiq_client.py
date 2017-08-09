@@ -2,8 +2,10 @@ import requests
 import json
 import logging
 import requests_cache
+import urllib
 from requests.auth import HTTPBasicAuth
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
 
 class CiqServiceException(Exception):
     pass
@@ -164,7 +166,7 @@ class CapIQClient:
                 logging.info(properties)
                 for property_name, property_value in properties.items():
                     if not (property_name.upper() in return_key["properties"] and \
-                                        return_key["properties"][property_name.upper()] == property_value):
+                                        return_key["properties"][property_name.upper()] == property_value.replace(" ", "+")):
                         match = False
                 if match:
                     return return_key["key"]
