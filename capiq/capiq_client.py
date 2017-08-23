@@ -118,7 +118,7 @@ class CapIQClient:
             cache_line = cache_file.readline()
             cache_data = cache_line.split(",")
             if cache_data[0] == str(datetime.datetime.now().date()):
-                return cache_data[1]
+                return int(cache_data[1])
             else:
                 cache_file.close()
                 self.requent_count = 0
