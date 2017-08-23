@@ -1,3 +1,6 @@
+import datetime
+import os
+
 import requests
 import json
 import logging
@@ -16,6 +19,7 @@ class CapIQClient:
     _username = None
     _password = None
     _debug = False
+    requent_count = 0
 
     def __init__(self, username, password, verify=True, debug=False):
         assert username is not None
@@ -26,6 +30,7 @@ class CapIQClient:
         self._password = password
         self._verify = verify
         self._debug = debug
+        self.requent_count = self.get_cached_request_count()
         if not self._verify:
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
         if self._debug:
@@ -90,16 +95,49 @@ class CapIQClient:
     def gdsg(self, identifiers, group_mnemonics, return_keys, properties=None):
         return self.make_request(identifiers, group_mnemonics, return_keys, properties, "GDSG", False)
 
+    def get_request_count(self):
+        return self.requent_count
+
+    def cache_request_count(self):
+        # write the request_count to a file with todays date
+        cache_file = open("./request_count_cache", "w")
+        cache_file.write("{date},{request_count}".format(
+            date=datetime.datetime.now().date(),
+            request_count=self.requent_count
+        ))
+        cache_file.close()
+
+    def get_cached_request_count(self):
+        # check for the cache file
+        #   if present check if the date is today
+        #       if the date is today then get the count and return it
+        #       if the date is not today then overwrite the file with todays date and a count of zero and return 0
+        # if the file is not present then create one with todays date and a count of 0
+        if os.path.isfile("./request_count_cache"):
+            cache_file = open("./request_count_cache", "r")
+            cache_line = cache_file.readline()
+            cache_data = cache_line.split(",")
+            if cache_data[0] == str(datetime.datetime.now().date()):
+                return cache_data[1]
+            else:
+                cache_file.close()
+                self.requent_count = 0
+                self.cache_request_count()
+        else:
+            self.requent_count = 0
+            self.cache_request_count()
 
     def make_request(self, identifiers, mnemonics, return_keys, properties, api_function_identifier, multiple_results_expected):
         req_array = []
         returnee = {}
         mnemonic_return_keys = self.build_mnemonic_return_key_index(mnemonics, return_keys, properties)
+        tmp_request_count = 0
 
         for identifier in identifiers:
             for i, mnemonic in enumerate(mnemonics):
                 req_array.append({"function": api_function_identifier, "identifier": identifier, "mnemonic": mnemonic,
                                   "properties": properties[i] if properties else {}})
+                tmp_request_count += 1
         req = {"inputRequests": req_array}
         response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
@@ -107,6 +145,9 @@ class CapIQClient:
             logging.info("Cap IQ response")
             logging.info(response.json())
             logging.info("reponse from cache: {}".format(response.from_cache))
+        if not response.from_cache:
+            self.requent_count += tmp_request_count
+            self.cache_request_count()
 
         if len(response.json()['GDSSDKResponse']) == 1 and \
                         len(response.json()['GDSSDKResponse'][0]) == 1 and \

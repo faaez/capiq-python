@@ -4,3 +4,5 @@ mock
 requests-cache
 nose
 unittest
+datetime
+os
