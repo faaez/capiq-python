@@ -123,9 +123,11 @@ class CapIQClient:
                 cache_file.close()
                 self.requent_count = 0
                 self.cache_request_count()
+                return self.requent_count
         else:
             self.requent_count = 0
             self.cache_request_count()
+            return self.requent_count
 
     def make_request(self, identifiers, mnemonics, return_keys, properties, api_function_identifier, multiple_results_expected):
         req_array = []
