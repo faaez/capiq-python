@@ -65,3 +65,4 @@ capiq/tests/manual/settings.py
 
 # cache files
 *.sqlite
+request_count_cache
