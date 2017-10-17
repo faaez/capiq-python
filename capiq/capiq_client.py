@@ -39,6 +39,7 @@ class CapIQClient:
             self.enable_error_logging()
         # cache requests for 24 hours
         requests_cache.install_cache('capiq_cache', backend='sqlite', expire_after=86400, allowable_methods=('POST',))
+        requests_cache.get_cache().remove_old_entries(datetime.datetime.fromordinal(datetime.date.today().toordinal()))
 
     # This function retrieves a single data point for a point in time value for a mnemonic either current or
     # historical. Default inputs include a Mnemonic and a Security/Entity Identifier
