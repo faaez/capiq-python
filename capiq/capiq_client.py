@@ -13,8 +13,8 @@ class CiqServiceException(Exception):
     pass
 
 class CapIQClient:
-    _endpoint = 'https://sdk.gds.standardandpoors.com/gdssdk/rest/v2/clientservice.json'
-    _headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept-Encoding': 'gzip,deflate'}
+    _endpoint = 'https://api-ciq.marketintelligence.spglobal.com/gdsapi/rest/v3/clientservice.json'
+    _headers = {'Content-Type': 'application/json', 'Accept-Encoding': 'gzip,deflate'}
     _verify = True  # Disable SSL Checks for requests. Set to False to avoid SSL blocking in secured networks
     _username = None
     _password = None
@@ -144,7 +144,7 @@ class CapIQClient:
                                   "properties": properties[i] if properties else {}})
                 tmp_request_count += 1
         req = {"inputRequests": req_array}
-        response = requests.post(self._endpoint, headers=self._headers, data='inputRequests=' + json.dumps(req),
+        response = requests.post(self._endpoint, headers=self._headers, data=json.dumps(req),
                                  auth=HTTPBasicAuth(self._username, self._password), verify=self._verify)
         if self._debug:
             logging.info("Cap IQ response")
