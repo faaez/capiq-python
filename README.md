@@ -1,9 +1,11 @@
 # capiq-python
 Thin Python wrapper for CapIQ's REST API
 
+Includes request caching, with a keep alive of 24 hours.  Credentials are passed in to the constructor for ease of use.  
+
 ##Status
 
-The wrapper is functional.  It includes request caching, with a keep alive of 24 hours.  Credentials are passed in to the constructor for ease of use.  
+I unfortunately don't have CapIQ access anymore so am not able to maintain this. Please feel free to create pull requests if you like. 
 
 ###TODO
 
